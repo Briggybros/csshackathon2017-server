@@ -3,14 +3,14 @@ const Sequelize = require('sequelize');
 /* eslint new-cap: ["error", {"capIsNew": false}] */
 
 /** Class representing a Pushendpoint model for sequelize. */
-class MaterialsModel {
+class MaterialModel {
 
     /**
     * @constructor
     * @param {Object} sequelize The Sequelize object.
     */
   constructor(sequelize) {
-    this.Materials = sequelize.define('materials', {
+    this.Material = sequelize.define('materials', {
       id: {
         primaryKey: true,
         type: Sequelize.STRING,
@@ -28,4 +28,4 @@ class MaterialsModel {
   }
 }
 
-module.exports = {MaterialsModel};
+module.exports = {MaterialModel};

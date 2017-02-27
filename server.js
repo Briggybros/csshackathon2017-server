@@ -32,8 +32,20 @@ app.get('/getauthority', (req, res) => {
   });
 });
 
-app.get('/recyclable/:barcode', (req, res) => {
+app.get('/recyclable/:authority/:barcode', (req, res) => {
+  let authority = req.params.authority;
   let barcode = req.params.barcode;
+
+  db.itemModel.findAll({
+    attributes: [
+      'component'
+    ],
+    where: {
+      barcode
+    },
+  }).then((items) => {
+
+  });
 });
 
 app.listen(port, () => {

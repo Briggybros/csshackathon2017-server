@@ -1,6 +1,6 @@
 const Sequelize = require('sequelize');
 const {AuthModel} = require('./models/AuthModel.js');
-const {MaterialsModel} = require('./models/MaterialsModel.js');
+const {MaterialModel} = require('./models/MaterialModel.js');
 const {ItemModel} = require('./models/ItemModel.js');
 const {InstructionModel} = require('./models/InstructionModel.js');
 
@@ -45,7 +45,7 @@ createSequelize() {
       this.authModel = new AuthModel(this.sequelize);
       this.itemModel = new ItemModel(this.sequelize);
       this.instructionModel = new InstructionModel(this.sequelize);
-      this.materialsModel = new MaterialsModel(this.sequelize);
+      this.materialModel = new MaterialModel(this.sequelize);
       resolve();
     });
   }
@@ -64,7 +64,14 @@ createSequelize() {
         },
         onDelete: 'CASCADE',
       });
-      this.instructionModel.Instruction.belongsTo(this.materialsModel.Materials, {
+      this.instructionModel.Instruction.belongsTo(this.materialsModel.Material, {
+         foreignKey: {
+           field: 'materialId',
+           allowNull: false,
+         },
+         onDelete: 'CASCADE',
+       });
+       this.itemModel.Item.belongsTo(this.materialModel.Material, {
          foreignKey: {
            field: 'materialId',
            allowNull: false,
