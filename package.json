@@ -1,0 +1,19 @@
+{
+  "name": "hackathon-server",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "eslint ./"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Briggybros/hackathon-server.git"
+  },
+  "author": "Grumby Birb",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Briggybros/hackathon-server/issues"
+  },
+  "homepage": "https://github.com/Briggybros/hackathon-server#readme"
+}
