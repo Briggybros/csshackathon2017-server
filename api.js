@@ -97,43 +97,6 @@ function getInstruction(material, authority) {
 * @param {String} barcode The barcode of the item
 * @return {Object} An object which describes the recycability of the components of the item.
 */
-/* function getRecyclable(authority, barcode) {
-  return getItems(barcode)
-  .then((items) => {
-    if(items.length === 0) {
-      return {error: 'item not registered'};
-    } else {
-      let materialsPromise = items.map((item) => {
-        return getMaterial(item).then((material) => {
-          return {
-            name: item.name,
-            material: material,
-          };
-        }).catch((err) => {
-          console.error(err);
-        });
-      });
-      return Promise.all(materialsPromise).then((materials) => {
-        return materials.map((material) => {
-          return getInstruction(material, authority).then((instruction) => {
-            console.log(instruction);
-            return {
-              name: material.name,
-              instruction: instruction.instruction ? instruction.instruction : 'not recyclable',
-            };
-          }).catch((err) => {
-            console.error(err);
-          });
-        });
-      }).catch((err) => {
-        console.error(err);
-      });
-    }
-  }).catch((err) => {
-    console.error(err);
-  });
-} */
-
 function getRecyclable(authority, barcode) {
   return getItems(barcode).then((items) => {
     if (items.length === 0) {
