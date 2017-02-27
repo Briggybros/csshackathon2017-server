@@ -4,7 +4,7 @@ const {getAuthority, getRecyclable, createItem, getMaterials} = require('./api.j
 
 const app = express();
 
-const port = 8081 || process.env.PORT;
+const port = process.env.PORT || 8081;
 
 app.use(bodyParser.json());
 
@@ -17,11 +17,11 @@ app.get('/getauthority', (req, res) => {
 });
 
 app.get('/recyclapple', (req, res) => {
-  getRecyclable(req.query.authority, req.query.barcode)
-  .then((instructions) => {
-    Promise.all(instructions).then((response) => {
-      res.send(JSON.stringify(response));
-    });
+  getRecyclable(req.query.authority, req.query.barcode).then((response) => {
+    console.log(response);
+    res.send(JSON.stringify(response));
+  }).catch((err) => {
+    console.error(err);
   });
 });
 

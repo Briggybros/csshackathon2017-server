@@ -82,7 +82,7 @@ function getInstruction(material, authority) {
   return db.instructionModel.Instruction.findOne({
     where: {
       authId: authority,
-      materialId: material.material.id,
+      materialId: material.id,
     },
   }).then((instruction) => {
     return instruction.dataValues;
@@ -97,7 +97,7 @@ function getInstruction(material, authority) {
 * @param {String} barcode The barcode of the item
 * @return {Object} An object which describes the recycability of the components of the item.
 */
-function getRecyclable(authority, barcode) {
+/* function getRecyclable(authority, barcode) {
   return getItems(barcode)
   .then((items) => {
     if(items.length === 0) {
@@ -116,11 +116,50 @@ function getRecyclable(authority, barcode) {
       return Promise.all(materialsPromise).then((materials) => {
         return materials.map((material) => {
           return getInstruction(material, authority).then((instruction) => {
+            console.log(instruction);
             return {
               name: material.name,
               instruction: instruction.instruction ? instruction.instruction : 'not recyclable',
             };
+          }).catch((err) => {
+            console.error(err);
           });
+        });
+      }).catch((err) => {
+        console.error(err);
+      });
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
+} */
+
+function getRecyclable(authority, barcode) {
+  return getItems(barcode).then((items) => {
+    if (items.length === 0) {
+      return {error: 'item not registered'};
+    } else {
+      let materials = [];
+      for (let i = 0; i < items.length; i++) {
+        materials.push(getMaterial(items[i]));
+      }
+
+      return Promise.all(materials).then((materials) => {
+        let instructions = [];
+        for (let i = 0; i < materials.length; i++) {
+          instructions.push(getInstruction(materials[i], authority));
+        }
+        return Promise.all(instructions).then((instructions) => {
+          let response = [];
+          for (let i = 0; i < items.length; i++) {
+            response.push({
+              name: items[i].name,
+              instruction: instructions[i].instruction,
+            });
+          }
+          return response;
+        }).catch((err) => {
+          console.error(err);
         });
       }).catch((err) => {
         console.error(err);
