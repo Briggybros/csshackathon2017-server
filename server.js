@@ -10,24 +10,35 @@ app.use(bodyParser.json());
 
 app.get('/getauthority', (req, res) => {
   getAuthority(req.query.latitude, req.query.longitude).then((response) => {
-    res.send(JSON.stringify(response));
+    res.send(JSON.stringify({results: response}));
   }).catch((err) => {
     console.error(err);
   });
 });
 
 app.get('/recyclapple', (req, res) => {
-  getRecyclable(req.query.authority, req.query.barcode).then((response) => {
-    console.log(response);
-    res.send(JSON.stringify(response));
-  }).catch((err) => {
-    console.error(err);
-  });
+  if (req.query.authority !== undefined) {
+    getRecyclable(req.query.authority, req.query.barcode).then((response) => {
+      res.send(JSON.stringify({results: response}));
+    }).catch((err) => {
+      console.error(err);
+    });
+  } else if (req.query.latitude !== undefined && req.query.longitude !== undefined) {
+    getAuthority(req.query.latitude, req.query.longitude).then((response) => {
+      getRecyclable(response.id, req.query.barcode).then((response) => {
+        res.send(JSON.stringify({results: response}));
+      }).catch((err) => {
+        console.error(err);
+      });
+    }).catch((err) => {
+      console.error(err);
+    });
+  }
 });
 
 app.get('/getmaterials', (req, res) => {
   getMaterials().then((response) => {
-    res.send(JSON.stringify(response));
+    res.send(JSON.stringify({results: response}));
   }).catch((err) => {
     console.error(err);
   });
@@ -36,7 +47,7 @@ app.get('/getmaterials', (req, res) => {
 app.post('/recyclapple', (req, res) => {
   console.log(req.body);
   createItem(req.body, req.query.barcode).then((response) => {
-    res.send(JSON.stringify(response));
+    res.send(JSON.stringify({results: response}));
   }).catch((err) => {
     console.error(err);
   });
