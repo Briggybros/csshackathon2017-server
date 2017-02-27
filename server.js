@@ -16,7 +16,7 @@ app.get('/getauthority', (req, res) => {
   });
 });
 
-app.get('/recyclapple/', (req, res) => {
+app.get('/recyclapple', (req, res) => {
   getRecyclable(req.query.authority, req.query.barcode)
   .then((instructions) => {
     Promise.all(instructions).then((response) => {
@@ -33,7 +33,7 @@ app.get('/getmaterials', (req, res) => {
   });
 });
 
-app.post('/recyclapple/', (req, res) => {
+app.post('/recyclapple', (req, res) => {
   createItem(JSON.parse(req.body), req.query.barcode).then((response) => {
     res.send(JSON.stringify(response));
   }).catch((err) => {
