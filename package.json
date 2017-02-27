@@ -2,10 +2,10 @@
   "name": "hackathon-server",
   "version": "1.0.0",
   "description": "",
-  "main": "nodemon --delay 5 server.js",
+  "main": "server.js",
   "scripts": {
     "test": "eslint ./",
-    "start": "node server.js"
+    "start": "nodemon --delay 5 server.js"
   },
   "repository": {
     "type": "git",

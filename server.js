@@ -1,5 +1,6 @@
 const express = require('express');
 const request = require('request');
+const crypto = require('crypto');
 
 const app = express();
 
@@ -9,17 +10,28 @@ app.get('/getauthority', (req, res) => {
   request(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${req.query.latitude},${req.query.longitude}&sensor=false`, (error, response, body) => {
     if(!error && response.statusCode == 200) {
       let result = JSON.parse(body).results[0].address_components;
-      let response = '';
+      let authority = null;
       for (let i = 0; i < result.length; i++) {
         for (let j = 0; j < result[i].types.length; j++) {
           if (result[i].types[j] === 'administrative_area_level_2') {
-            response = result[i].long_name;
+            authority = result[i].long_name;
           }
         }
       }
-      res.send(response);
+      if (authority !== null) {
+        res.send(JSON.stringify({
+          id: crypto.createHash('MD5').update(authority).digest('hex'),
+          name: authority,
+        }));
+      } else {
+        res.send(JSON.stringify({error: 'Cannot find local authority'}));
+      }
     }
   });
+});
+
+app.get('/recyclable/:barcode', (req, res) => {
+  let barcode = req.params.barcode;
 });
 
 app.listen(port, () => {

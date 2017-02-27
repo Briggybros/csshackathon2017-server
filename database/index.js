@@ -10,10 +10,9 @@ export class Database {
 
   /**
   * @constructor
-  * @param {String} env The current environment.
   */
-  constructor(env) {
-    this.createSequelize(env)
+  constructor() {
+    this.createSequelize()
       .then(() => {
         return this.createModels();
       })
@@ -26,27 +25,13 @@ export class Database {
 * @param {String} env The current environment.
 * @return {Promise} A promise of a created database.
 */
-createSequelize(env) {
+createSequelize() {
   /* Use promise to return once database querying is complete. */
   return new Promise((resolve, reject) => {
-    if (env === 'dev') {
-      this.sequelize = new Sequelize('recyclapple', 'recyclapple', 'password', {
-        dialect: 'sqlite',
-        storage: './database.sqlite',
-      });
-    } else {
-      this.sequelize = new Sequelize('recyclapple', 'recyclapple', 'password', {
-        host: 'localhost',
-        dialect: 'mysql',
-        logging: false,
-
-        pool: {
-          max: 5,
-          min: 0,
-          idle: 10000,
-        },
-      });
-    }
+    this.sequelize = new Sequelize('recyclapple', 'recyclapple', 'password', {
+      dialect: 'sqlite',
+      storage: './database.sqlite',
+    });
     resolve();
   });
 }
