@@ -2,7 +2,7 @@
   "name": "hackathon-server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "nodemon --delay 5 server.js",
   "scripts": {
     "test": "eslint ./",
     "start": "node server.js"
@@ -19,11 +19,13 @@
   "homepage": "https://github.com/Briggybros/hackathon-server#readme",
   "dependencies": {
     "express": "^4.14.1",
+    "request": "^2.79.0",
     "sequelize": "^3.30.2",
     "sqlite3": "^3.1.8"
   },
   "devDependencies": {
     "eslint": "^3.16.1",
-    "eslint-config-google": "^0.7.1"
+    "eslint-config-google": "^0.7.1",
+    "nodemon": "^1.11.0"
   }
 }
