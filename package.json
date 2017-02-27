@@ -2,7 +2,7 @@
   "name": "hackathon-server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "nodemon --delay 5 server.js",
   "scripts": {
     "test": "eslint ./",
     "start": "node server.js"
@@ -25,6 +25,7 @@
   },
   "devDependencies": {
     "eslint": "^3.16.1",
-    "eslint-config-google": "^0.7.1"
+    "eslint-config-google": "^0.7.1",
+    "nodemon": "^1.11.0"
   }
 }
