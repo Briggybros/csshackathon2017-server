@@ -100,23 +100,26 @@ function getInstruction(material, authority) {
 function getRecyclable(authority, barcode) {
   return Promise.resolve(getItems(barcode))
   .then((items) => {
-    let materials = items.map((item) => {
-      return getMaterial(item).then((material) => {
-        return {
-          name: item.name,
-          material: material,
-        };
+    if(items.length === 0) {
+      return {error: 'item not registered'};
+    } else {
+      let materials = items.map((item) => {
+        return getMaterial(item).then((material) => {
+          return {
+            name: item.name,
+            material: material,
+          };
+        });
       });
-    });
-
-    return materials.map((material) => {
-      return getInstruction(material, authority).then((instruction) => {
-        return {
-          name: material.name,
-          instruction: instruction.instruction,
-        };
+      return materials.map((material) => {
+        return getInstruction(material, authority).then((instruction) => {
+          return {
+            name: material.name,
+            instruction: instruction.instruction ? instruction.instruction : 'not recyclable',
+          };
+        });
       });
-    });
+    }
   });
 }
 
