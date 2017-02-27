@@ -1,5 +1,7 @@
 const Sequelize = require('sequelize');
 const {AuthModel} = require('./models/AuthModel.js');
+const {MaterialsModel} = require('./models/MaterialsModel.js');
+const {ItemModel} = require('./models/ItemModel.js');
 
 /** A class representing the database */
 export class Database {
