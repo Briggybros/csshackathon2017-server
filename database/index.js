@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const {AuthModel} = require('./models/AuthModel.js');
 const {MaterialModel} = require('./models/MaterialModel.js');
 const {ItemModel} = require('./models/ItemModel.js');
 const {InstructionModel} = require('./models/InstructionModel.js');
@@ -45,7 +44,6 @@ createSequelize() {
   createModels() {
     /* Use promise to return once database querying is complete. */
     return new Promise((resolve, reject) => {
-      this.authModel = new AuthModel(this.sequelize);
       this.itemModel = new ItemModel(this.sequelize);
       this.instructionModel = new InstructionModel(this.sequelize);
       this.materialModel = new MaterialModel(this.sequelize);
@@ -60,13 +58,6 @@ createSequelize() {
     /* Use promise to return once database querying is complete. */
     return new Promise((resolve, reject) => {
       /* Make all events belong to some user. */
-      this.instructionModel.Instruction.belongsTo(this.authModel.Auth, {
-        foreignKey: {
-          field: 'authId',
-          allowNull: false,
-        },
-        onDelete: 'CASCADE',
-      });
       this.instructionModel.Instruction.belongsTo(this.materialModel.Material, {
          foreignKey: {
            field: 'materialId',
