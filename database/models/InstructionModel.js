@@ -23,6 +23,10 @@ class InstructionModel {
         type: Sequelize.STRING,
         field: 'instruction',
       },
+      authId: {
+        type: Sequelize.STRING,
+        field: 'authId',
+      },
     }, {
       freezeTableName: true, //Model tableName will be same as model name
     });
