@@ -37,7 +37,7 @@ function getAuthority(latitude, longitude) {
 /**
 * Get the item data from the barcode
 * @param {String} barcode the items barcode
-* @return {Array} an array of items this object is made up of.
+* @return {Promise} A promise of an array of items this object is made up of.
 */
 function getItems(barcode) {
   return new Promise((resolve, reject) => {
@@ -56,7 +56,7 @@ function getItems(barcode) {
 /**
 * Get the material components of an item
 * @param {String} item The item data
-* @return {Object} An object containing the material data of the item.
+* @return {Promise} A promise of an object containing the material data of the item.
 */
 function getMaterial(item) {
   return new Promise((resolve, reject) => {
@@ -70,8 +70,23 @@ function getMaterial(item) {
   });
 }
 
+/**
+* Get the instrcution of how to recycle specified material
+* @param {String} material The identifier of the material
+* @param {String} authority The identifier of the authority
+* @return {Promise} A promise of an object representing an instruction
+*/
 function getInstruction(material, authority) {
-  
+  return new Promise((resolve, reject) => {
+    resolve(db.instructionModel.Instruction.findOne({
+      where: {
+        authId: authority,
+        materialId: material.id,
+      },
+    }).then((instruction) => {
+      return instruction.dataValues;
+    }));
+  });
 }
 
 /**
@@ -95,12 +110,10 @@ function getRecyclable(authority, barcode) {
       return getInstruction(material, authority).then((instruction) => {
         return {
           name: material.name,
-          instruction: instruction,
+          instruction: instruction.instruction,
         };
       });
     });
-
-    return
   });
 }
 
