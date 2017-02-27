@@ -136,7 +136,7 @@ function getRecyclable(authority, barcode) {
 * @param {Array} components an array of the items components
 * @return {Promise} A promise of an object representing the item.
 */
-function createItem(components) {
+function createItem(components, barcode) {
   return Promise.resolve(db.itemModel.Item.count({
     where: {
       barcode,
@@ -148,7 +148,7 @@ function createItem(components) {
       let items = [];
       for (let i = 0; i < components.length; i++) {
         items.push(db.itemModel.Item.create({
-          barcode: components[i].barcode,
+          barcode,
           name: components[i].name,
           materialId: components[i].material,
         }).then((item) => {

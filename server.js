@@ -16,8 +16,8 @@ app.get('/getauthority', (req, res) => {
   });
 });
 
-app.get('/recyclapple/:authority/:barcode', (req, res) => {
-  getRecyclable(req.params.authority, req.params.barcode)
+app.get('/recyclapple/', (req, res) => {
+  getRecyclable(req.query.authority, req.query.barcode)
   .then((instructions) => {
     Promise.all(instructions).then((instructions2) => {
       res.send(JSON.stringify(instructions2));
@@ -33,8 +33,8 @@ app.get('/getmaterials', (req, res) => {
   });
 });
 
-app.post('/recyclapple/:authority/:barcode', (req, res) => {
-  createItem(JSON.parse(req.body)).then((response) => {
+app.post('/recyclapple/', (req, res) => {
+  createItem(JSON.parse(req.body), req.query.barcode).then((response) => {
     res.send(JSON.stringify(response));
   }).catch((err) => {
     console.error(err);
