@@ -5,7 +5,7 @@ const {ItemModel} = require('./models/ItemModel.js');
 const {InstructionModel} = require('./models/InstructionModel.js');
 
 /** A class representing the database */
-export class Database {
+class Database {
 
 
   /**
@@ -98,3 +98,5 @@ createSequelize() {
     this.sequelize.close();
   }
 }
+
+module.exports = {Database};

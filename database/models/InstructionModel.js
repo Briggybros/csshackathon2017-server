@@ -3,7 +3,7 @@ const Sequelize = require('sequelize');
 /* eslint new-cap: ["error", {"capIsNew": false}] */
 
 /** Class representing a Pushendpoint model for sequelize. */
-export class InstructionModel {
+class InstructionModel {
 
     /**
     * @constructor
@@ -27,3 +27,5 @@ export class InstructionModel {
     });
   }
 }
+
+module.exports = {InstructionModel};

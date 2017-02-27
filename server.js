@@ -1,8 +1,10 @@
 const express = require('express');
 const request = require('request');
 const crypto = require('crypto');
+const {Database} = require ('./database/index.js');
 
 const app = express();
+const db = new Database();
 
 const port = 8081 || process.env.PORT;
 
