@@ -20,7 +20,7 @@ class ItemModel {
         autoIncrement: true,
       },
       barcode: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.STRING,
         field: 'barcode',
       },
       name: {

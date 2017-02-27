@@ -134,6 +134,7 @@ function getRecyclable(authority, barcode) {
 /**
 * Create an item.
 * @param {Array} components an array of the items components
+* @param {String} barcode the barcode of the item
 * @return {Promise} A promise of an object representing the item.
 */
 function createItem(components, barcode) {

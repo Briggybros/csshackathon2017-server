@@ -19,8 +19,8 @@ app.get('/getauthority', (req, res) => {
 app.get('/recyclapple/', (req, res) => {
   getRecyclable(req.query.authority, req.query.barcode)
   .then((instructions) => {
-    Promise.all(instructions).then((instructions2) => {
-      res.send(JSON.stringify(instructions2));
+    Promise.all(instructions).then((response) => {
+      res.send(JSON.stringify(response));
     });
   });
 });
