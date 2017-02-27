@@ -6,11 +6,17 @@ const app = express();
 const port = 8081 || process.env.PORT;
 
 app.get('/getauthority', (req, res) => {
-  getAuthority(req.query.latitude, req.query.longitude);
+  Promise.resolve(getAuthority(req.query.latitude, req.query.longitude))
+  .then((response) => {
+    res.send(JSON.stringify(response));
+  });
 });
 
 app.get('/recyclable/:authority/:barcode', (req, res) => {
-  getRecyclable(req.params.authority, req.params.barcode);
+  Promise.resolve(getRecyclable(req.params.authority, req.params.barcode))
+  .then((response) => {
+    res.send(JSON.stringify(response));
+  });
 });
 
 app.listen(port, () => {

@@ -13,7 +13,7 @@ class ItemModel {
     this.Item = sequelize.define('item', {
       id: {
         primaryKey: true,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         field: 'id',
         allowNull: false,
         unique: true,

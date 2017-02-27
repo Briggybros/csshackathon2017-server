@@ -17,7 +17,10 @@ class Database {
         return this.createModels();
       })
       .then(() => {
-        this.setupRelations().catch(console.log);
+        return this.setupRelations();
+      })
+      .then(() => {
+        this.sequelize.sync();
       });
   }
 

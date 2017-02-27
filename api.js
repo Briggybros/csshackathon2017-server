@@ -11,26 +11,30 @@ const db = new Database();
 * @return {Object} An object containing the name of the county and the id.
 */
 function getAuthority(latitude, longitude) {
-  request(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false`, (error, response, body) => {
-    if(!error && response.statusCode == 200) {
-      let result = JSON.parse(body).results[0].address_components;
-      let authority = null;
-      for (let i = 0; i < result.length; i++) {
-        for (let j = 0; j < result[i].types.length; j++) {
-          if (result[i].types[j] === 'administrative_area_level_2') {
-            authority = result[i].long_name;
+  return new Promise((resolve, reject) => {
+    request(`http://maps.googleapis.com/maps/api/geocode/json?latlng=${latitude},${longitude}&sensor=false`, (error, response, body) => {
+      if(!error && response.statusCode == 200) {
+        let result = JSON.parse(body).results[0].address_components;
+        let authority = null;
+        for (let i = 0; i < result.length; i++) {
+          for (let j = 0; j < result[i].types.length; j++) {
+            if (result[i].types[j] === 'administrative_area_level_2') {
+              authority = result[i].long_name;
+            }
           }
         }
-      }
-      if (authority !== null) {
-        return {
-          id: crypto.createHash('MD5').update(authority).digest('hex'),
-          name: authority,
-        };
+        if (authority !== null) {
+          resolve({
+            id: crypto.createHash('MD5').update(authority).digest('hex'),
+            name: authority,
+          });
+        } else {
+          resolve({error: 'cannot find local authority'});
+        }
       } else {
-        return {error: 'cannot find local authority'};
+        resolve({error: 'google api appears to be down'});
       }
-    }
+    });
   });
 }
 
@@ -96,24 +100,26 @@ function getInstruction(material, authority) {
 * @return {Object} An object which describes the recycability of the components of the item.
 */
 function getRecyclable(authority, barcode) {
-  return getItems(barcode).then((items) => {
-    let materials = items.map((item) => {
-      return getMaterial(item).then((material) => {
-        return {
-          name: item.name,
-          material: material,
-        };
+  return new Promise((resolve, reject) => {
+    resolve(getItems(barcode).then((items) => {
+      let materials = items.map((item) => {
+        return getMaterial(item).then((material) => {
+          return {
+            name: item.name,
+            material: material,
+          };
+        });
       });
-    });
 
-    return materials.map((material) => {
-      return getInstruction(material, authority).then((instruction) => {
-        return {
-          name: material.name,
-          instruction: instruction.instruction,
-        };
+      return materials.map((material) => {
+        return getInstruction(material, authority).then((instruction) => {
+          return {
+            name: material.name,
+            instruction: instruction.instruction,
+          };
+        });
       });
-    });
+    }));
   });
 }
 

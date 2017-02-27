@@ -13,10 +13,11 @@ class InstructionModel {
     this.Instruction = sequelize.define('instruction', {
       id: {
         primaryKey: true,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         field: 'id',
         allowNull: false,
         unique: true,
+        autoIncrement: true,
       },
       instruction: {
         type: Sequelize.STRING,

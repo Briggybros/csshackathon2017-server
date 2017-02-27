@@ -13,10 +13,11 @@ class MaterialModel {
     this.Material = sequelize.define('materials', {
       id: {
         primaryKey: true,
-        type: Sequelize.STRING,
+        type: Sequelize.INTEGER,
         field: 'id',
         allowNull: false,
         unique: true,
+        autoIncrement: true,
       },
       name: {
         type: Sequelize.STRING,
