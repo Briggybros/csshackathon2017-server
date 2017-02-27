@@ -123,4 +123,35 @@ function getRecyclable(authority, barcode) {
   });
 }
 
-module.exports = {getAuthority, getRecyclable};
+/**
+* Create an item.
+* @param {Array} components an array of the items components
+* @return {Promise} A promise of an object representing the item.
+*/
+function createItem(components) {
+  return Promise.resolve(db.itemModel.Item.count({
+    where: {
+      barcode,
+    },
+  })).then((count) => {
+    if(number !== 0) {
+      return {error: 'item already exists'};
+    } else {
+      let items = [];
+      for (let i = 0; i < components.length; i++) {
+        items.push(db.itemModel.Item.create({
+          barcode: components[i].barcode,
+          name: components[i].name,
+          materialId: components[i].material,
+        }).then((item) => {
+          return item.dataValues;
+        }).catch((err) => {
+          return {errors: 'something went wrong -- probably invalid material'};
+        }));
+      }
+      return Promise.all(items);
+    }
+  });
+}
+
+module.exports = {getAuthority, getRecyclable, createItem};

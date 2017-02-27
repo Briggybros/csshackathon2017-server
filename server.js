@@ -1,9 +1,12 @@
 const express = require('express');
-const {getAuthority, getRecyclable} = require('./api.js');
+const bodyParser = require('body-parser');
+const {getAuthority, getRecyclable, createItem} = require('./api.js');
 
 const app = express();
 
 const port = 8081 || process.env.PORT;
+
+app.use(bodyParser.json());
 
 app.get('/getauthority', (req, res) => {
   getAuthority(req.query.latitude, req.query.longitude).then((response) => {
@@ -11,8 +14,14 @@ app.get('/getauthority', (req, res) => {
   });
 });
 
-app.get('/recyclable/:authority/:barcode', (req, res) => {
+app.get('/recyclapple/:authority/:barcode', (req, res) => {
   getRecyclable(req.params.authority, req.params.barcode).then((response) => {
+    res.send(JSON.stringify(response));
+  });
+});
+
+app.post('/recyclapple/:authority/:barcode', (req, res) => {
+  createItem(JSON.parse(req.body)).then((response) => {
     res.send(JSON.stringify(response));
   });
 });
