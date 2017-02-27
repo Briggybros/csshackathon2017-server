@@ -143,7 +143,7 @@ function createItem(components, barcode) {
       barcode,
     },
   })).then((count) => {
-    if(number !== 0) {
+    if(count !== 0) {
       return {error: 'item already exists'};
     } else {
       let items = [];

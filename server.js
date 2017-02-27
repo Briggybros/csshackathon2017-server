@@ -34,7 +34,8 @@ app.get('/getmaterials', (req, res) => {
 });
 
 app.post('/recyclapple', (req, res) => {
-  createItem(JSON.parse(req.body), req.query.barcode).then((response) => {
+  console.log(req.body);
+  createItem(req.body, req.query.barcode).then((response) => {
     res.send(JSON.stringify(response));
   }).catch((err) => {
     console.error(err);
