@@ -19,6 +19,7 @@
   "homepage": "https://github.com/Briggybros/hackathon-server#readme",
   "dependencies": {
     "express": "^4.14.1",
+    "request": "^2.79.0",
     "sequelize": "^3.30.2",
     "sqlite3": "^3.1.8"
   },
