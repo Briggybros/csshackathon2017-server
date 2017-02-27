@@ -79,34 +79,13 @@ createSequelize(env) {
         },
         onDelete: 'CASCADE',
       });
-      this.instructionModel.PushEndpoint.belongsTo(this.userModel.User, {
+      this.instructionModel.Instruction.belongsTo(this.materialsModel.Materials, {
          foreignKey: {
-           field: 'userId',
+           field: 'materialId',
            allowNull: false,
          },
          onDelete: 'CASCADE',
        });
-
-
-      this.userModel.User.belongsToMany(this.userModel.User, {
-        as: 'Follower',
-        through: {
-          model: this.followerModel.Follower,
-          unique: false,
-        },
-        foreignKey: 'follower',
-        constraints: false,
-      });
-
-      this.userModel.User.belongsToMany(this.userModel.User, {
-        as: 'Following',
-        through: {
-          model: this.followerModel.Follower,
-          unique: false,
-        },
-        foreignKey: 'following',
-        constraints: false,
-      });
 
       //
       // // /* Make all users have people they're following */
