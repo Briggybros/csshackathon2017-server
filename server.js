@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {getAuthority, getRecyclable, createItem} = require('./api.js');
+const {getAuthority, getRecyclable, createItem, getMaterials} = require('./api.js');
 
 const app = express();
 
@@ -16,6 +16,12 @@ app.get('/getauthority', (req, res) => {
 
 app.get('/recyclapple/:authority/:barcode', (req, res) => {
   getRecyclable(req.params.authority, req.params.barcode).then((response) => {
+    res.send(JSON.stringify(response));
+  });
+});
+
+app.get('/getmaterials', (req, res) => {
+  getMaterials().then((response) => {
     res.send(JSON.stringify(response));
   });
 });

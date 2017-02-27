@@ -43,7 +43,7 @@ function getAuthority(latitude, longitude) {
 */
 function getItems(barcode) {
   return new Promise((resolve, reject) => {
-    resolve(db.itemModel.findAll({
+    resolve(db.itemModel.Item.findAll({
       where: {
         barcode,
       },
@@ -51,6 +51,8 @@ function getItems(barcode) {
       return items.map((item) => {
         return item.dataValues;
       });
+    }).catch((err) => {
+      console.error(err);
     }));
   });
 }
@@ -68,6 +70,8 @@ function getMaterial(item) {
       },
     }).then((material) => {
       return material.dataValues;
+    }).catch((err) => {
+      console.error(err);
     }));
   });
 }
@@ -80,6 +84,8 @@ function getMaterial(item) {
 */
 function getInstruction(material, authority) {
   return new Promise((resolve, reject) => {
+    console.log(material);
+    console.log(authority);
     resolve(db.instructionModel.Instruction.findOne({
       where: {
         authId: authority,
@@ -87,6 +93,8 @@ function getInstruction(material, authority) {
       },
     }).then((instruction) => {
       return instruction.dataValues;
+    }).catch((err) => {
+      console.error(err);
     }));
   });
 }
@@ -103,23 +111,30 @@ function getRecyclable(authority, barcode) {
     if(items.length === 0) {
       return {error: 'item not registered'};
     } else {
-      let materials = items.map((item) => {
-        return getMaterial(item).then((material) => {
-          return {
-            name: item.name,
-            material: material,
-          };
+      new Promise((resolve, reject) => {
+        resolve(items.map((item) => {
+          return getMaterial(item).then((material) => {
+            return {
+              name: item.name,
+              material: material,
+            };
+          });
+        }));
+      }).then((materials) => {
+        return materials.map((material) => {
+          return getInstruction(material, authority).then((instruction) => {
+            return {
+              name: material.name,
+              instruction: instruction.instruction ? instruction.instruction : 'not recyclable',
+            };
+          });
         });
-      });
-      return materials.map((material) => {
-        return getInstruction(material, authority).then((instruction) => {
-          return {
-            name: material.name,
-            instruction: instruction.instruction ? instruction.instruction : 'not recyclable',
-          };
-        });
+      }).catch((err) => {
+        console.error(err);
       });
     }
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
@@ -151,7 +166,21 @@ function createItem(components) {
       }
       return Promise.all(items);
     }
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
-module.exports = {getAuthority, getRecyclable, createItem};
+/**
+* List all materials
+* @return {Promise} A promise of a list of all materials.
+*/
+function getMaterials() {
+  return Promise.resolve(db.materialModel.Material.findAll()).then((materials) => {
+    return materials.map((material) => {
+      return material.dataValues;
+    });
+  });
+}
+
+module.exports = {getAuthority, getRecyclable, createItem, getMaterials};
