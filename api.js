@@ -140,27 +140,28 @@ function getRecyclable(authority, barcode) {
 * @return {Promise} A promise of an object representing the item.
 */
 function createItem(components, barcode) {
-  return Promise.resolve(db.itemModel.Item.count({
+  return db.itemModel.Item.count({
     where: {
       barcode,
     },
-  })).then((count) => {
+  }).then((count) => {
     if(count !== 0) {
       return {error: 'item already exists'};
     } else {
       let items = [];
       for (let i = 0; i < components.length; i++) {
+        console.log(components);
         items.push(db.itemModel.Item.create({
           barcode,
           name: components[i].name,
           materialId: components[i].material,
-        }).then((item) => {
-          return item.dataValues;
-        }).catch((err) => {
-          return {errors: 'something went wrong -- probably invalid material'};
         }));
       }
-      return Promise.all(items);
+      return Promise.all(items).then((items) => {
+        return items;
+      }).catch((err) => {
+        console.error(err);
+      });
     }
   }).catch((err) => {
     console.error(err);
