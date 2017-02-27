@@ -64,7 +64,7 @@ createSequelize() {
         },
         onDelete: 'CASCADE',
       });
-      this.instructionModel.Instruction.belongsTo(this.materialsModel.Material, {
+      this.instructionModel.Instruction.belongsTo(this.materialModel.Material, {
          foreignKey: {
            field: 'materialId',
            allowNull: false,

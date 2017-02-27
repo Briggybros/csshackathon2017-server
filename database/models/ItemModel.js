@@ -23,6 +23,10 @@ class ItemModel {
         type: Sequelize.INTEGER,
         field: 'barcode',
       },
+      name: {
+        type: Sequelize.STRING,
+        field: 'name',
+      },
     }, {
       freezeTableName: true, //Model tableName will be same as model name
     });
