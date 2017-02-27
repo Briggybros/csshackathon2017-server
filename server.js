@@ -11,24 +11,33 @@ app.use(bodyParser.json());
 app.get('/getauthority', (req, res) => {
   getAuthority(req.query.latitude, req.query.longitude).then((response) => {
     res.send(JSON.stringify(response));
+  }).catch((err) => {
+    console.error(err);
   });
 });
 
 app.get('/recyclapple/:authority/:barcode', (req, res) => {
-  getRecyclable(req.params.authority, req.params.barcode).then((response) => {
-    res.send(JSON.stringify(response));
+  getRecyclable(req.params.authority, req.params.barcode)
+  .then((instructions) => {
+    Promise.all(instructions).then((instructions2) => {
+      res.send(JSON.stringify(instructions2));
+    });
   });
 });
 
 app.get('/getmaterials', (req, res) => {
   getMaterials().then((response) => {
     res.send(JSON.stringify(response));
+  }).catch((err) => {
+    console.error(err);
   });
 });
 
 app.post('/recyclapple/:authority/:barcode', (req, res) => {
   createItem(JSON.parse(req.body)).then((response) => {
     res.send(JSON.stringify(response));
+  }).catch((err) => {
+    console.error(err);
   });
 });
 

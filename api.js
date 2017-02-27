@@ -42,18 +42,16 @@ function getAuthority(latitude, longitude) {
 * @return {Promise} A promise of an array of items this object is made up of.
 */
 function getItems(barcode) {
-  return new Promise((resolve, reject) => {
-    resolve(db.itemModel.Item.findAll({
-      where: {
-        barcode,
-      },
-    }).then((items) => {
-      return items.map((item) => {
-        return item.dataValues;
-      });
-    }).catch((err) => {
-      console.error(err);
-    }));
+  return db.itemModel.Item.findAll({
+    where: {
+      barcode,
+    },
+  }).then((items) => {
+    return items.map((item) => {
+      return item.dataValues;
+    });
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
@@ -63,16 +61,14 @@ function getItems(barcode) {
 * @return {Promise} A promise of an object containing the material data of the item.
 */
 function getMaterial(item) {
-  return new Promise((resolve, reject) => {
-    resolve(db.materialModel.Material.findOne({
-      where: {
-        id: item.materialId,
-      },
-    }).then((material) => {
-      return material.dataValues;
-    }).catch((err) => {
-      console.error(err);
-    }));
+  return db.materialModel.Material.findOne({
+    where: {
+      id: item.materialId,
+    },
+  }).then((material) => {
+    return material.dataValues;
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
@@ -83,19 +79,15 @@ function getMaterial(item) {
 * @return {Promise} A promise of an object representing an instruction
 */
 function getInstruction(material, authority) {
-  return new Promise((resolve, reject) => {
-    console.log(material);
-    console.log(authority);
-    resolve(db.instructionModel.Instruction.findOne({
-      where: {
-        authId: authority,
-        materialId: material.id,
-      },
-    }).then((instruction) => {
-      return instruction.dataValues;
-    }).catch((err) => {
-      console.error(err);
-    }));
+  return db.instructionModel.Instruction.findOne({
+    where: {
+      authId: authority,
+      materialId: material.material.id,
+    },
+  }).then((instruction) => {
+    return instruction.dataValues;
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
@@ -106,21 +98,22 @@ function getInstruction(material, authority) {
 * @return {Object} An object which describes the recycability of the components of the item.
 */
 function getRecyclable(authority, barcode) {
-  return Promise.resolve(getItems(barcode))
+  return getItems(barcode)
   .then((items) => {
     if(items.length === 0) {
       return {error: 'item not registered'};
     } else {
-      new Promise((resolve, reject) => {
-        resolve(items.map((item) => {
-          return getMaterial(item).then((material) => {
-            return {
-              name: item.name,
-              material: material,
-            };
-          });
-        }));
-      }).then((materials) => {
+      let materialsPromise = items.map((item) => {
+        return getMaterial(item).then((material) => {
+          return {
+            name: item.name,
+            material: material,
+          };
+        }).catch((err) => {
+          console.error(err);
+        });
+      });
+      return Promise.all(materialsPromise).then((materials) => {
         return materials.map((material) => {
           return getInstruction(material, authority).then((instruction) => {
             return {
