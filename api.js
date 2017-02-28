@@ -115,10 +115,14 @@ function getRecyclable(authority, barcode) {
         return Promise.all(instructions).then((instructions) => {
           let response = [];
           for (let i = 0; i < items.length; i++) {
-            response.push({
-              name: items[i].name,
-              instruction: instructions[i].instruction,
-            });
+            if (instructions[i] !== null) {
+              response.push({
+                name: items[i].name,
+                instruction: instructions[i].instruction,
+              });
+            } else {
+              return {error: `no instruction found for ${materials[i].name} -id:${materials[i].id} in -authority:${authority}`};
+            }
           }
           return response;
         }).catch((err) => {
@@ -161,6 +165,7 @@ function createItem(components, barcode) {
         return items;
       }).catch((err) => {
         console.error(err);
+        return {error: 'invalid material id -- probably'};
       });
     }
   }).catch((err) => {
@@ -173,11 +178,15 @@ function createItem(components, barcode) {
 * @return {Promise} A promise of a list of all materials.
 */
 function getMaterials() {
-  return Promise.resolve(db.materialModel.Material.findAll()).then((materials) => {
+  return db.materialModel.Material.findAll().then((materials) => {
     return materials.map((material) => {
       return material.dataValues;
     });
   });
 }
 
-module.exports = {getAuthority, getRecyclable, createItem, getMaterials};
+function createInstruction(data, authority) {
+
+}
+
+module.exports = {getAuthority, getRecyclable, createItem, getMaterials, createInstruction};

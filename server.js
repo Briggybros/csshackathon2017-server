@@ -1,6 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
-const {getAuthority, getRecyclable, createItem, getMaterials} = require('./api.js');
+const {getAuthority, getRecyclable, createItem, getMaterials, createInstruction} = require('./api.js');
 
 const app = express();
 
@@ -9,30 +9,40 @@ const port = process.env.PORT || 8081;
 app.use(bodyParser.json());
 
 app.get('/getauthority', (req, res) => {
-  getAuthority(req.query.latitude, req.query.longitude).then((response) => {
-    res.send(JSON.stringify({results: response}));
-  }).catch((err) => {
-    console.error(err);
-  });
-});
-
-app.get('/recyclapple', (req, res) => {
-  if (req.query.authority !== undefined) {
-    getRecyclable(req.query.authority, req.query.barcode).then((response) => {
+  if (req.query.latitude !== undefined && req.query.longitude !== undefined) {
+    getAuthority(req.query.latitude, req.query.longitude).then((response) => {
       res.send(JSON.stringify({results: response}));
     }).catch((err) => {
       console.error(err);
     });
-  } else if (req.query.latitude !== undefined && req.query.longitude !== undefined) {
-    getAuthority(req.query.latitude, req.query.longitude).then((response) => {
-      getRecyclable(response.id, req.query.barcode).then((response) => {
+  } else {
+    res.send({results: {error: 'no location data provided'}});
+  }
+});
+
+app.get('/recyclapple', (req, res) => {
+  if (req.query.barcode !== undefined) {
+    if (req.query.authority !== undefined) {
+      getRecyclable(req.query.authority, req.query.barcode).then((response) => {
         res.send(JSON.stringify({results: response}));
       }).catch((err) => {
         console.error(err);
       });
-    }).catch((err) => {
-      console.error(err);
-    });
+    } else if (req.query.latitude !== undefined && req.query.longitude !== undefined) {
+      getAuthority(req.query.latitude, req.query.longitude).then((response) => {
+        getRecyclable(response.id, req.query.barcode).then((response) => {
+          res.send(JSON.stringify({results: response}));
+        }).catch((err) => {
+          console.error(err);
+        });
+      }).catch((err) => {
+        console.error(err);
+      });
+    } else {
+      res.send({results: {error: 'no location data provided'}});
+    }
+  } else {
+    res.send({results: {error: 'no barcode provided'}});
   }
 });
 
@@ -45,11 +55,35 @@ app.get('/getmaterials', (req, res) => {
 });
 
 app.post('/recyclapple', (req, res) => {
-  createItem(req.body, req.query.barcode).then((response) => {
-    res.send(JSON.stringify({results: response}));
-  }).catch((err) => {
-    console.error(err);
-  });
+  if (barcode !== undefined) {
+    createItem(req.body, req.query.barcode).then((response) => {
+      res.send(JSON.stringify({results: response}));
+    }).catch((err) => {
+      console.error(err);
+    });
+  } else {
+    res.send({results: {error: 'barcode not provided'}});
+  }
+});
+
+app.post('/createinstruction', (req, res) => {
+  if (req.query.authority !== undefined) {
+    createInstruction(req.body, req.query.authority).then((response) => {
+      res.send(JSON.stringify({results: reponse}));
+    }).catch((err) => {
+      console.error(err);
+    });
+  } else if (req.query.latitude !== undefined && req.query.longitude !== undefined) {
+    getAuthority(req.query.latitude, req.query.longitude).then((response) => {
+      createInstruction(req.body, response.id).then((response) => {
+        res.send(JSON.stringify({results: reponse}));
+      }).catch((err) => {
+        console.error(err);
+      });
+    });
+  } else {
+    res.send({results: {error: 'no location data provided'}});
+  }
 });
 
 app.listen(port, () => {
