@@ -181,6 +181,19 @@ function createItem(components, barcode) {
     } else {
       let items = [];
       for (let i = 0; i < components.length; i++) {
+        if (components[i].name === '' || components[i].name === undefined) {
+          return {
+            results: [],
+            error: 'no name given',
+          };
+        }
+
+        if (components[i].materialId === undefined || isNaN(parseInt(components[i].materialId))) {
+          return {
+            results: [],
+            error: 'invalid material',
+          };
+        }
         items.push(db.itemModel.Item.create({
             name: components[i].name,
             barcode: barcode,
