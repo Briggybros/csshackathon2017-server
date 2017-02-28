@@ -67,6 +67,7 @@ app.get('/getmaterials', (req, res) => {
 });
 
 app.post('/recyclapple', (req, res) => {
+  console.log(req.body);
   if (req.query.barcode !== undefined) {
     createItem(req.body.components, req.query.barcode).then((response) => {
       res.send(JSON.stringify(response));
