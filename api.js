@@ -24,15 +24,30 @@ function getAuthority(latitude, longitude) {
     }
     if (authority !== null) {
       return {
-        id: crypto.createHash('MD5').update(authority).digest('hex'),
-        name: authority,
+        results: {
+          id: crypto.createHash('MD5').update(authority).digest('hex'),
+          name: authority,
+        },
+        error: '',
       };
     } else {
-      return {error: 'cannot find local authority'};
+      return {
+        results: {
+          id: '',
+          name: '',
+        },
+        error: 'cannot find local authority',
+      };
     }
   })
   .catch((error) => {
-    return {error: 'google api appears to be down'};
+    return {
+      results: {
+        id: '',
+        name: '',
+      },
+      error: 'google api appears to be down',
+    };
   });
 }
 
@@ -100,7 +115,10 @@ function getInstruction(material, authority) {
 function getRecyclable(authority, barcode) {
   return getItems(barcode).then((items) => {
     if (items.length === 0) {
-      return {error: 'item not registered'};
+      return {
+        results: [],
+        error: 'item not registered',
+      };
     } else {
       let materials = [];
       for (let i = 0; i < items.length; i++) {
@@ -121,10 +139,16 @@ function getRecyclable(authority, barcode) {
                 instruction: instructions[i].instruction,
               });
             } else {
-              return {error: `no instruction found for ${materials[i].name} -id:${materials[i].id} in -authority:${authority}`};
+              return {
+                results: [],
+                error: `no instruction found for ${materials[i].name} -id:${materials[i].id} in -authority:${authority}`,
+              };
             }
           }
-          return response;
+          return {
+            results: response,
+            error: '',
+          };
         }).catch((err) => {
           console.error(err);
         });
@@ -150,22 +174,39 @@ function createItem(components, barcode) {
     },
   }).then((count) => {
     if(count !== 0) {
-      return {error: 'item already exists'};
+      return {
+        results: {
+          barcode: '',
+          name: '',
+          materialId: 0,
+        },
+        error: 'item already exists',
+      };
     } else {
       let items = [];
       for (let i = 0; i < components.length; i++) {
         console.log(components);
         items.push(db.itemModel.Item.create({
-          barcode,
-          name: components[i].name,
-          materialId: components[i].material,
+          results: {
+            barcode,
+            name: components[i].name,
+            materialId: components[i].material,
+          },
+          error: '',
         }));
       }
       return Promise.all(items).then((items) => {
         return items;
       }).catch((err) => {
         console.error(err);
-        return {error: 'invalid material id -- probably'};
+        return {
+          results: {
+            barcode: '',
+            name: '',
+            materialId: 0,
+          },
+          error: 'invalid material id -- probably',
+        };
       });
     }
   }).catch((err) => {
@@ -180,8 +221,13 @@ function createItem(components, barcode) {
 function getMaterials() {
   return db.materialModel.Material.findAll().then((materials) => {
     return materials.map((material) => {
-      return material.dataValues;
+      return {
+        results: material.dataValues,
+        error: '',
+      };
     });
+  }).catch((err) => {
+    console.error(err);
   });
 }
 
@@ -199,12 +245,22 @@ function createInstruction(data, authority) {
     },
   }).then((count) => {
     if (count !== 0) {
-      return {error: 'instruction already created'};
+      return {
+        results: {
+          instruction: '',
+          authId: '',
+          materialId: 0,
+        },
+        error: 'instruction already created',
+      };
     } else {
       return db.instructionModel.Instruction.create({
-        instruction: data.instruction,
-        authId: authority,
-        materialId: data.material,
+        results: {
+          instruction: data.instruction,
+          authId: authority,
+          materialId: data.material,
+        },
+        error: '',
       }).then((instruction) => {
         return instruction.dataValues;
       }).catch((err) => {

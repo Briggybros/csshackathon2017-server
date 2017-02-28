@@ -72,24 +72,6 @@ createSequelize() {
          },
          onDelete: 'CASCADE',
        });
-
-      //
-      // // /* Make all users have people they're following */
-      // // this.followersModel.Follower.belongsTo(this.userModel.User, {
-      // //   foreignKey: {
-      // //     field: 'userId',
-      // //     allowNull: false,
-      // //   },
-      // //   onDelete: 'CASCADE',
-      // // });
-      // /* Make all followers be following a user  */
-      // this.userModel.User.hasMany(this.this.userModel.User
-      //   // foreignKey: {
-      //   //   field: 'followingId',
-      //   //   allowNull: false,
-      //   // },
-      //   // onDelete: 'CASCADE',
-      // );
       resolve();
     });
   }
