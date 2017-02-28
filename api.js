@@ -175,36 +175,33 @@ function createItem(components, barcode) {
   }).then((count) => {
     if(count !== 0) {
       return {
-        results: {
-          barcode: '',
-          name: '',
-          materialId: 0,
-        },
+        results: [],
         error: 'item already exists',
       };
     } else {
+      console.log('item doesnt exist');
       let items = [];
       for (let i = 0; i < components.length; i++) {
-        console.log(components);
         items.push(db.itemModel.Item.create({
-          results: {
-            barcode,
             name: components[i].name,
-            materialId: components[i].material,
-          },
-          error: '',
+            materialId: parseInt(components[i].materialId),
         }));
       }
       return Promise.all(items).then((items) => {
-        return items;
+        return {
+          results: items.map((item) => {
+            return {
+              barcode: item.barcode,
+              name: item.name,
+              materialId: item.materialId,
+            };
+          }),
+          error: '',
+        };
       }).catch((err) => {
         console.error(err);
         return {
-          results: {
-            barcode: '',
-            name: '',
-            materialId: 0,
-          },
+          results: [],
           error: 'invalid material id -- probably',
         };
       });

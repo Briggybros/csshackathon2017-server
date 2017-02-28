@@ -68,18 +68,14 @@ app.get('/getmaterials', (req, res) => {
 
 app.post('/recyclapple', (req, res) => {
   if (req.query.barcode !== undefined) {
-    createItem(req.body, req.query.barcode).then((response) => {
+    createItem(req.body.components, req.query.barcode).then((response) => {
       res.send(JSON.stringify(response));
     }).catch((err) => {
       console.error(err);
     });
   } else {
     res.send({
-      results: {
-        barcode: '',
-        name: '',
-        materialId: 0,
-      },
+      results: [],
       error: 'barcode not provided',
     });
   }
@@ -87,7 +83,7 @@ app.post('/recyclapple', (req, res) => {
 
 app.post('/createinstruction', (req, res) => {
   if (req.query.authority !== undefined) {
-    createInstruction(req.body.components, req.query.authority).then((response) => {
+    createInstruction(req.body, req.query.authority).then((response) => {
       res.send(JSON.stringify(response));
     }).catch((err) => {
       console.error(err);
