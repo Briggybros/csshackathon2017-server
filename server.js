@@ -87,14 +87,14 @@ app.post('/recyclapple', (req, res) => {
 
 app.post('/createinstruction', (req, res) => {
   if (req.query.authority !== undefined) {
-    createInstruction(req.body, req.query.authority).then((response) => {
+    createInstruction(req.body.components, req.query.authority).then((response) => {
       res.send(JSON.stringify(response));
     }).catch((err) => {
       console.error(err);
     });
   } else if (req.query.latitude !== undefined && req.query.longitude !== undefined) {
     getAuthority(req.query.latitude, req.query.longitude).then((response) => {
-      createInstruction(req.body, response.id).then((response) => {
+      createInstruction(req.body.components, response.id).then((response) => {
         res.send(JSON.stringify(response));
       }).catch((err) => {
         console.error(err);
