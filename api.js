@@ -185,8 +185,35 @@ function getMaterials() {
   });
 }
 
+/**
+* Create an instruction for an authority
+* @param {Object} data An object with instruction and material keys
+* @param {String} authority The unique identifier of the authority
+* @return {Promise} A promise of the created instruction
+*/
 function createInstruction(data, authority) {
-
+  return db.instructionModel.Instruction.count({
+    where: {
+      authId: authority,
+      materialId: data.material,
+    },
+  }).then((count) => {
+    if (count !== 0) {
+      return {error: 'instruction already created'};
+    } else {
+      return db.instructionModel.Instruction.create({
+        instruction: data.instruction,
+        authId: authority,
+        materialId: data.material,
+      }).then((instruction) => {
+        return instruction.dataValues;
+      }).catch((err) => {
+        console.error(err);
+      });
+    }
+  }).catch((err) => {
+    console.error(err);
+  });
 }
 
 module.exports = {getAuthority, getRecyclable, createItem, getMaterials, createInstruction};
