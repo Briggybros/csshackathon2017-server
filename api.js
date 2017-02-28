@@ -179,12 +179,11 @@ function createItem(components, barcode) {
         error: 'item already exists',
       };
     } else {
-      console.log('item doesnt exist');
-      console.log(components);
       let items = [];
       for (let i = 0; i < components.length; i++) {
         items.push(db.itemModel.Item.create({
             name: components[i].name,
+            barcode: barcode,
             materialId: parseInt(components[i].materialId),
         }));
       }

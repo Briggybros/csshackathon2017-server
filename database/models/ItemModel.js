@@ -22,10 +22,12 @@ class ItemModel {
       barcode: {
         type: Sequelize.STRING,
         field: 'barcode',
+        allowNull: false,
       },
       name: {
         type: Sequelize.STRING,
         field: 'name',
+        allowNull: false,
       },
     }, {
       freezeTableName: true, //Model tableName will be same as model name
