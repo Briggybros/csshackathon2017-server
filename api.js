@@ -180,6 +180,7 @@ function createItem(components, barcode) {
       };
     } else {
       console.log('item doesnt exist');
+      console.log(components);
       let items = [];
       for (let i = 0; i < components.length; i++) {
         items.push(db.itemModel.Item.create({
